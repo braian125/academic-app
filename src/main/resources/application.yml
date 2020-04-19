@@ -1,0 +1,13 @@
+server:
+    port: ${SERVER_PORT:8080}
+spring:
+    profiles:
+        active: ${SPRING_PROFILES_ACTIVE:local}
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://${DB_HOSTNAME:localhost}:${DB_PORT:3306}/${DB_DATABASE:academic-app}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+        username: ${DB_USER:root}
+        password: ${DB_PASS:secret}
+    jpa:
+        hibernate:
+            ddl-auto: update
