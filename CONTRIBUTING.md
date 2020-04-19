@@ -1,0 +1,11 @@
+How to contribute
+This page describes the sponsored-contribution process for the JDK and JDK Updates Projects. Other Projects may follow these conventions or may establish their own; please consult the appropriate Project pages for details.
+
+This process is intended for developers who already have the skills required to work on the JDK but who do not yet have full Committer rights. It allows such developers to demonstrate their abilities by submitting meaningful contributions in the form of patches and by pairing them with sponsors, i.e., existing Committers for the Project who can offer advice, help them become familiar with the JDK development process, and eventually push their patches into the appropriate Mercurial repository. Over time, it's expected that skilled Contributors will eventually earn full commit rights for themselves.
+
+This page focuses on the contributing side of the process; a companion page describes how to sponsor a contribution.
+
+0. Become a Contributor
+Like many other open-source communities, the OpenJDK Community requires Contributors to jointly assign their copyright on contributed code. If you haven't yet signed the Oracle Contributor Agreement (OCA) then please do so, scan it and e-mail the result to oracle-ca_us(at)oracle.com. Please make sure to specify OpenJDK as the project you'd like to contribute to so that we can process and store your OCA. Allow at least two weeks for processing. If your request is urgent contact the appropriate Project Lead.
+
+The OCA gives Oracle and the Contributor joint copyright interests in the code. The Contributor retains copyrights while also granting those rights to Oracle as the Community's sponsor. You only need to sign the OCA once in order to cover all changes that you might contribute to any Oracle-sponsored open-source community including not just OpenJDK but also, for example, GlassFish, NetBeans, and MySQL. If you've already signed the OCA or the former SCA (Sun Contributor Agreement) for any Oracle-sponsored open-source community, then you do not need to sign it again in order to contribute to OpenJDK. Please note that you do not need to sign an OCA if you work at Oracle or a company which has negotiated an equivalent agreement. (You can learn more about the OCA by consulting its FAQ.)
