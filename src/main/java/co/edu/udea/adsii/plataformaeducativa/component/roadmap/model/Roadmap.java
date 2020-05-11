@@ -41,8 +41,7 @@ public class Roadmap implements Serializable {
     @Size(min = 3, max = 65)
     private String description;
 
-    @NotNull
-    private Boolean active = false;
+    private Boolean active;
 
     private LocalDateTime createDate;
 

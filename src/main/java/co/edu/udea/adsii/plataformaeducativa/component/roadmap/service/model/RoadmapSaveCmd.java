@@ -29,10 +29,13 @@ public class RoadmapSaveCmd {
     @Size(min = 3, max = 45)
     private String description;
 
+    private Boolean active = false;
+
     public static Roadmap toModel(@NotNull RoadmapSaveCmd roadmapToCreateCmd) {
         return Roadmap.builder()
                 .name(roadmapToCreateCmd.getName())
                 .description(roadmapToCreateCmd.getDescription())
+                .active(roadmapToCreateCmd.getActive())
                 .build();
     }
 }

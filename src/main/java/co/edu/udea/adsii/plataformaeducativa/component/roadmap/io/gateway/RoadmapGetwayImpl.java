@@ -4,9 +4,12 @@ import co.edu.udea.adsii.plataformaeducativa.component.roadmap.io.repository.Roa
 import co.edu.udea.adsii.plataformaeducativa.component.roadmap.model.Roadmap;
 import co.edu.udea.adsii.plataformaeducativa.component.roadmap.service.RoadmapGateway;
 
+import org.springframework.stereotype.Repository;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+@Repository
 public class RoadmapGetwayImpl implements RoadmapGateway {
 
     private RoadmapRepository roadmapRepository;
