@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
 @RestController
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 @RequestMapping(path = "/api/v1/careers", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CareerController {
 
