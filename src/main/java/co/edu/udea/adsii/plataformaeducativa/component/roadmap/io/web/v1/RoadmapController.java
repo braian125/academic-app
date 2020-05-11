@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,8 +27,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @RestController
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 @RequestMapping(path = "/api/v1/roadmaps", produces = MediaType.APPLICATION_JSON_VALUE)
-@Api(tags = {"Roadmaps"}, value = "Roadmaps")
+@Api(tags = { "Roadmaps" }, value = "Roadmaps")
 public class RoadmapController {
 
     private RoadmapService roadmapService;
@@ -38,13 +40,12 @@ public class RoadmapController {
 
     @PostMapping
     @ApiOperation(value = "Create an User.", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "Created."),
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Created."),
             @ApiResponse(code = 400, message = "Payload is invalid.", response = ErrorDetails.class),
             @ApiResponse(code = 404, message = "Resource not found.", response = ErrorDetails.class),
-            @ApiResponse(code = 500, message = "Internal server error.", response = ErrorDetails.class)
-    })
+            @ApiResponse(code = 500, message = "Internal server error.", response = ErrorDetails.class) })
     @ResponseStatus(value = HttpStatus.CREATED)
-    @CrossOrigin(exposedHeaders = {HttpHeaders.LOCATION})
+    @CrossOrigin(exposedHeaders = { HttpHeaders.LOCATION })
     public RoadmapSaveResponse create(@Valid @NotNull @RequestBody RoadmapSaveRequest roadmapToCreate) {
         RoadmapSaveCmd roadmapToCreateCmd = RoadmapSaveRequest.toModel(roadmapToCreate);
         Roadmap roadmapCreated = roadmapService.create(roadmapToCreateCmd);
