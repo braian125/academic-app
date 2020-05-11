@@ -13,6 +13,10 @@ public interface CareerService {
 
     Career create(@NotNull CareerSaveCmd careerToCreateCmd);
 
+    Career findById(@NotNull Long id);
+
     Page<Career> findByParameters(@NotNull CareerQuerySearchCmd queryCriteriaCmd, @NotNull Pageable pageable);
+
+    Career update(@NotNull Long id, @NotNull CareerSaveCmd careerToUpdateCmd);
 
 }

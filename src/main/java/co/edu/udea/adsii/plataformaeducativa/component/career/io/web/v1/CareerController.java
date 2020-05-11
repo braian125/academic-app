@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import co.edu.udea.adsii.plataformaeducativa.component.career.io.web.v1.model.CareerListResponse;
 import co.edu.udea.adsii.plataformaeducativa.component.career.io.web.v1.model.CareerQuerySearchRequest;
 import co.edu.udea.adsii.plataformaeducativa.component.career.io.web.v1.model.CareerSaveRequest;
+import co.edu.udea.adsii.plataformaeducativa.component.career.io.web.v1.model.CareerSaveResponse;
 import co.edu.udea.adsii.plataformaeducativa.component.career.model.Career;
 import co.edu.udea.adsii.plataformaeducativa.component.career.service.CareerService;
 import co.edu.udea.adsii.plataformaeducativa.component.career.service.model.CareerQuerySearchCmd;
@@ -35,61 +36,99 @@ import java.util.stream.Collectors;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
 @RestController
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 @RequestMapping(path = "/api/v1/careers", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CareerController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    CareerService careerService;
+        private final Logger logger = LoggerFactory.getLogger(this.getClass());
+        CareerService careerService;
 
-    @Autowired
-    public CareerController(CareerService careerService) {
-        this.careerService = careerService;
-    }
+        @Autowired
+        public CareerController(CareerService careerService) {
+                this.careerService = careerService;
+        }
 
-    @PostMapping
-    @ApiOperation(value = "Create an Career.", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses(value = { @ApiResponse(code = 201, message = "Created."),
-            @ApiResponse(code = 400, message = "Payload is invalid.", response = ErrorDetails.class),
-            @ApiResponse(code = 404, message = "Resource not found.", response = ErrorDetails.class),
-            @ApiResponse(code = 500, message = "Internal server error.", response = ErrorDetails.class) })
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @CrossOrigin(exposedHeaders = { HttpHeaders.LOCATION })
-    public ResponseEntity<Void> create(@Valid @NotNull @RequestBody CareerSaveRequest careerToCreate) {
-        logger.debug("Begin create: careerToCreate = {}", careerToCreate);
+        @PostMapping
+        @ApiOperation(value = "Create an Career.", produces = MediaType.APPLICATION_JSON_VALUE)
+        @ApiResponses(value = { @ApiResponse(code = 201, message = "Created."),
+                        @ApiResponse(code = 400, message = "Payload is invalid.", response = ErrorDetails.class),
+                        @ApiResponse(code = 404, message = "Resource not found.", response = ErrorDetails.class),
+                        @ApiResponse(code = 500, message = "Internal server error.", response = ErrorDetails.class) })
+        @ResponseStatus(value = HttpStatus.CREATED)
+        @CrossOrigin(exposedHeaders = { HttpHeaders.LOCATION })
+        public ResponseEntity<Void> create(@Valid @NotNull @RequestBody CareerSaveRequest careerToCreate) {
+                logger.debug("Begin create: careerToCreate = {}", careerToCreate);
 
-        CareerSaveCmd careerToCreateCmd = CareerSaveRequest.toModel(careerToCreate);
+                CareerSaveCmd careerToCreateCmd = CareerSaveRequest.toModel(careerToCreate);
 
-        Career careerCreated = careerService.create(careerToCreateCmd);
+                Career careerCreated = careerService.create(careerToCreateCmd);
 
-        URI location = fromUriString("/api/v1/careers").path("/{id}").buildAndExpand(careerCreated.getId()).toUri();
+                URI location = fromUriString("/api/v1/careers").path("/{id}").buildAndExpand(careerCreated.getId())
+                                .toUri();
 
-        logger.debug("End create: careerCreated = {}", careerCreated);
+                logger.debug("End create: careerCreated = {}", careerCreated);
 
-        return ResponseEntity.created(location).build();
-    }
+                return ResponseEntity.created(location).build();
+        }
 
-    @GetMapping
-    @ApiOperation(value = "Find careers by parameters.", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = CareerListResponse.class),
-            @ApiResponse(code = 400, message = "Payload is invalid.", response = ErrorDetails.class),
-            @ApiResponse(code = 500, message = "Internal server error.", response = ErrorDetails.class)
+        @GetMapping(path = "/{id}")
+        @ApiOperation(value = "Find an Career by id.", produces = MediaType.APPLICATION_JSON_VALUE)
+        @ApiResponses(value = { @ApiResponse(code = 200, message = "Success.", response = CareerSaveResponse.class),
+                        @ApiResponse(code = 400, message = "Payload is invalid.", response = ErrorDetails.class),
+                        @ApiResponse(code = 404, message = "Resource not found.", response = ErrorDetails.class),
+                        @ApiResponse(code = 500, message = "Internal server error.", response = ErrorDetails.class) })
+        public ResponseEntity<CareerSaveResponse> findById(@Valid @PathVariable("id") @NotNull Long id) {
+                logger.debug("Begin findById: id = {}", id);
 
-    })
-    public ResponsePagination<CareerListResponse> findByParameters(
-            @Valid @NotNull CareerQuerySearchRequest queryCriteria,
-            @PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC, sort = "id") Pageable pageable) {
-        logger.debug("Begin findByParameters: queryCriteria = {}, pageable= {}", queryCriteria, pageable);
+                Career careerFound = careerService.findById(id);
 
-        CareerQuerySearchCmd queryCriteriaCmd = CareerQuerySearchRequest.toModel(queryCriteria);
+                logger.debug("End findById: careerFound = {}", careerFound);
 
-        Page<Career> careersFound = careerService.findByParameters(queryCriteriaCmd, pageable);
-        List<CareerListResponse> usersFoundList = careersFound.stream().map(CareerListResponse::fromModel)
-                .collect(Collectors.toList());
+                return ResponseEntity.ok(CareerSaveResponse.fromModel(careerFound));
+        }
 
-        logger.debug("End findByParameters: careersFound = {}", careersFound);
+        @GetMapping
+        @ApiOperation(value = "Find careers by parameters.", produces = MediaType.APPLICATION_JSON_VALUE)
+        @ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = CareerListResponse.class),
+                        @ApiResponse(code = 400, message = "Payload is invalid.", response = ErrorDetails.class),
+                        @ApiResponse(code = 500, message = "Internal server error.", response = ErrorDetails.class)
 
-        return ResponsePagination.fromObject(usersFoundList, careersFound.getTotalElements(), careersFound.getNumber(),
-                usersFoundList.size());
-    }
+        })
+        public ResponsePagination<CareerListResponse> findByParameters(
+                        @Valid @NotNull CareerQuerySearchRequest queryCriteria,
+                        @PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC, sort = "id") Pageable pageable) {
+                logger.debug("Begin findByParameters: queryCriteria = {}, pageable= {}", queryCriteria, pageable);
+
+                CareerQuerySearchCmd queryCriteriaCmd = CareerQuerySearchRequest.toModel(queryCriteria);
+
+                Page<Career> careersFound = careerService.findByParameters(queryCriteriaCmd, pageable);
+                List<CareerListResponse> usersFoundList = careersFound.stream().map(CareerListResponse::fromModel)
+                                .collect(Collectors.toList());
+
+                logger.debug("End findByParameters: careersFound = {}", careersFound);
+
+                return ResponsePagination.fromObject(usersFoundList, careersFound.getTotalElements(),
+                                careersFound.getNumber(), usersFoundList.size());
+        }
+
+        @PutMapping(path = "/{id}")
+        @ApiOperation(value = "Update an career.", produces = MediaType.APPLICATION_JSON_VALUE)
+        @ApiResponses(value = { @ApiResponse(code = 200, message = "Success.", response = CareerSaveResponse.class),
+                        @ApiResponse(code = 400, message = "Payload is invalid.", response = ErrorDetails.class),
+                        @ApiResponse(code = 404, message = "Resource not found.", response = ErrorDetails.class),
+                        @ApiResponse(code = 500, message = "Internal server error.", response = ErrorDetails.class)
+
+        })
+        public ResponseEntity<CareerSaveResponse> update(@Valid @RequestBody @NotNull CareerSaveRequest careerToUpdate,
+                        @Valid @PathVariable("id") @NotNull Long id) {
+                logger.debug("Begin update: careerToUpdate = {}, id = {}", careerToUpdate, id);
+
+                CareerSaveCmd careerToUpdateCmd = CareerSaveRequest.toModel(careerToUpdate);
+
+                Career careerUpdated = careerService.update(id, careerToUpdateCmd);
+
+                logger.debug("End update: careerUpdated = {}", careerUpdated);
+
+                return ResponseEntity.ok(CareerSaveResponse.fromModel(careerUpdated));
+        }
 }

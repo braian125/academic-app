@@ -11,6 +11,7 @@ import co.edu.udea.adsii.plataformaeducativa.component.career.io.repository.Care
 import co.edu.udea.adsii.plataformaeducativa.component.career.model.Career;
 import co.edu.udea.adsii.plataformaeducativa.component.career.service.CareerGateway;
 import co.edu.udea.adsii.plataformaeducativa.component.career.service.model.CareerQuerySearchCmd;
+import co.edu.udea.adsii.plataformaeducativa.component.shared.web.exception.ResourceNotFoundException;
 
 import javax.persistence.criteria.Predicate;
 import javax.validation.constraints.NotNull;
@@ -45,6 +46,18 @@ class CareerGatewayImpl implements CareerGateway {
         logger.debug("End save careerCreated = {}", careerCreated);
 
         return careerCreated;
+    }
+
+    @Override
+    public Career findById(@NotNull Long id) {
+        logger.debug("Begin findById id = {}", id);
+
+        Career careerFound = careerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NOT_FOUND));
+
+        logger.debug("End findById careerFound = {}", careerFound);
+
+        return careerFound;
     }
 
     @Override
@@ -83,5 +96,18 @@ class CareerGatewayImpl implements CareerGateway {
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
+    }
+
+    @Override
+    public Career update(@NotNull Career careerToUpdate) {
+        logger.debug("Begin update careerToUpdate = {}", careerToUpdate);
+
+        final Career careerToBeUpdated = careerToUpdate.toBuilder().updateDate(LocalDateTime.now()).build();
+
+        final Career careerUpdated = careerRepository.save(careerToBeUpdated);
+
+        logger.debug("End update careerUpdated = {}", careerUpdated);
+
+        return careerUpdated;
     }
 }

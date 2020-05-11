@@ -40,6 +40,18 @@ public class CareerServiceImpl implements CareerService {
 
     @Override
     @Transactional(readOnly = true)
+    public Career findById(@NotNull Long id) {
+        logger.debug("Begin findById id = {}", id);
+
+        Career careerFound = careerGateway.findById(id);
+
+        logger.debug("End findById careerFound = {}", careerFound);
+
+        return careerFound;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<Career> findByParameters(@NotNull CareerQuerySearchCmd queryCriteria, @NotNull Pageable pageable) {
         logger.debug("Begin findByParameters queryCriteria = {}, pageable = {}", queryCriteria, pageable);
 
@@ -48,5 +60,22 @@ public class CareerServiceImpl implements CareerService {
         logger.debug("End findByParameters careersFound = {}", careersFound);
 
         return careersFound;
+    }
+
+    @Override
+    public Career update(@NotNull Long id, @NotNull CareerSaveCmd careerToUpdateCmd) {
+        logger.debug("Begin update id = {}, careerToUpdateCmd = {}", id, careerToUpdateCmd);
+
+        Career careerInDataBase = findById(id);
+
+        Career careerToUpdate = careerInDataBase.toBuilder().name(careerToUpdateCmd.getName())
+                .description(careerToUpdateCmd.getDescription()).icon(careerToUpdateCmd.getIcon())
+                .active(careerToUpdateCmd.getActive()).build();
+
+        Career careerUpdated = careerGateway.update(careerToUpdate);
+
+        logger.debug("End update careerUpdated = {}", careerUpdated);
+
+        return careerUpdated;
     }
 }

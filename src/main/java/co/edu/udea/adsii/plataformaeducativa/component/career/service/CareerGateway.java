@@ -11,6 +11,10 @@ public interface CareerGateway {
 
     Career save(@NotNull Career careerToCreate);
 
+    Career findById(@NotNull Long id);
+
     Page<Career> findByParameters(@NotNull CareerQuerySearchCmd queryCriteria, @NotNull Pageable pageable);
+
+    Career update(@NotNull Career careerToUpdate);
 
 }
